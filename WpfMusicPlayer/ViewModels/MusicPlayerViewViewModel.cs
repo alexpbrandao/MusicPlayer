@@ -2,6 +2,7 @@
 using WpfMusicPlayer.Model;
 using WpfMusicPlayer.Repository;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace WpfMusicPlayer.ViewModels
 {
@@ -9,166 +10,199 @@ namespace WpfMusicPlayer.ViewModels
     {
         public MusicPlayerViewViewModel()
         {
-            LoadMusicPlayerData();         
+            LoadMusicPlayerDataAsync();         
         }
 
         private async void LoadMusicPlayerDataAsync()
         {
-            MusicDataRepository repository = new MusicDataRepository();
-            MusicPlayerData musicPlayerData = await repository.LoadMusicDataModelAsync();
+            var repository = new MusicDataRepository();
+            var musicPlayerData = await repository.LoadMusicDataModelAsync();
             if (musicPlayerData != null)
             {
                 Artists = musicPlayerData.Artists;
-                SetInitialSelections();
+                NumberOfArtists = Artists.Count;
             }
         }
 
         private void LoadMusicPlayerData()
         {
-            MusicDataRepository repository = new MusicDataRepository();
-            MusicPlayerData musicPlayerData = repository.LoadMusicDataModel();
+            var repository = new MusicDataRepository();
+            var musicPlayerData = repository.LoadMusicDataModel();
             if (musicPlayerData != null)
             {
                 Artists = musicPlayerData.Artists;
-                SetInitialSelections();
+                NumberOfArtists = Artists.Count;
             }
         }
 
-        private void SetInitialSelections()
-        {
-            NumberOfArtists = Artists.Count;
-            if (Artists.Count > 0)
-            {
-                SelectedArtist = Artists[0];
-                NumberOfAlbums = SelectedArtist.Albums.Count;
-                if (NumberOfAlbums > 0)
-                {
-                    SelectedAlbum = SelectedArtist.Albums[0];
-                    NumberOfSongs = SelectedAlbum.Songs.Count;
-                    if (NumberOfSongs > 0)
-                    {
-                        SelectedSong = SelectedAlbum.Songs[0];
-                    }
-                }
-            }
-        }
-
-        private ObservableCollection<Artist> artists = new ObservableCollection<Artist>();        
+        private ObservableCollection<Artist> _artists = new ObservableCollection<Artist>();        
         public ObservableCollection<Artist> Artists
         {
             get
             {
-                return artists;
+                return _artists;
             }   
             set
             {
-                artists = value;
+                if (value != _artists)
+                {
+                    _artists = value;
+                    OnPropertyChanged("Artists");
+                }
             }         
         }
 
-        private int numberOfArtists = 0;
+        private int _numberOfArtists = 0;
         public int NumberOfArtists
         {
             get
             {
-                return numberOfArtists;
+                return _numberOfArtists;
             }
             set
             {
-                numberOfArtists = value;
+                if (value != _numberOfArtists)
+                {
+                    _numberOfArtists = value;
+                    OnPropertyChanged("NumberOfArtists");
+                }                
             }
         }
 
-        private Artist selectedArtist = null;
+        private Artist _selectedArtist = null;
         public Artist SelectedArtist
         {
             get
             {
-                return selectedArtist;
+                return _selectedArtist;
             }
             set
             {
-                selectedArtist = value;
+                if (value != _selectedArtist)
+                {
+                    _selectedArtist = value;
+                    OnPropertyChanged("SelectedArtist");
+                }
             }
         }
 
-        private ObservableCollection<Album> albumsForArtist = new ObservableCollection<Album>();
+        private ObservableCollection<Album> _albumsForArtist = new ObservableCollection<Album>();
         public ObservableCollection<Album> AlbumsForArtist
         {
             get
             {
-                albumsForArtist = SelectedArtist.Albums;
-                if (albumsForArtist.Count > 0)
+                if (SelectedArtist != null)
                 {
-                    SelectedAlbum = albumsForArtist[0];
+                    _albumsForArtist = SelectedArtist.Albums;
+                    if (_albumsForArtist.Count > 0)
+                    {
+                        SelectedAlbum = _albumsForArtist[0];
+                    }
                 }
-                return albumsForArtist;
+
+                return _albumsForArtist;
+            }
+            set
+            {
+                if (value != _albumsForArtist)
+                {
+                    _albumsForArtist = value;
+                    OnPropertyChanged("AlbumsForArtist");
+                }
             }
         }
 
-        private int numberOfAlbums = 0;
+        private int _numberOfAlbums = 0;
         public int NumberOfAlbums
         {
             get
             {
-                return numberOfAlbums;
+                return _numberOfAlbums;
             }
             set
             {
-                numberOfAlbums = value;
+                if (value != _numberOfAlbums)
+                {
+                    _numberOfAlbums = value;
+                    OnPropertyChanged("NumberOfAlbums");
+                }
             }
         }
 
-        private Album selectedAlbum = null;        
+        private Album _selectedAlbum = null;        
         public Album SelectedAlbum
         {
             get
             {
-                return selectedAlbum;
+                return _selectedAlbum;
             }
             set
             {
-                selectedAlbum = value;
+                if (value != _selectedAlbum)
+                {
+                    _selectedAlbum = value;
+                    OnPropertyChanged("SelectedAlbum");
+                }
             }
         }
 
-        private ObservableCollection<Song> songsForAlbum = new ObservableCollection<Song>();
+        private ObservableCollection<Song> _songsForAlbum = new ObservableCollection<Song>();
         public ObservableCollection<Song> SongsForAlbum
         {
             get
             {
-                songsForAlbum = SelectedAlbum.Songs;
-                if (songsForAlbum.Count > 0)
+                if (SelectedAlbum != null)
                 {
-                    SelectedSong = songsForAlbum[0];
+                    _songsForAlbum = SelectedAlbum.Songs;
+                    if (_songsForAlbum.Count > 0)
+                    {
+                        SelectedSong = _songsForAlbum[0];
+                    }
                 }
-                return songsForAlbum;
+
+                return _songsForAlbum;
+            }
+            set
+            {
+                if (value != _songsForAlbum)
+                {
+                    _songsForAlbum = value;
+                    OnPropertyChanged("SongsForAlbum");
+                }
             }
         }
 
-        private int numberOfSongs = 0;
+        private int _numberOfSongs = 0;
         public int NumberOfSongs
         {
             get
             {
-                return numberOfSongs;
+                return _numberOfSongs;
             }
             set
             {
-                numberOfSongs = value;
+                if (value != _numberOfSongs)
+                {
+                    _numberOfSongs = value;
+                    OnPropertyChanged("NumberOfSongs");
+                }
             }
         }
 
-        private Song selectedSong = null;
+        private Song _selectedSong = null;
         public Song SelectedSong
         {
             get
             {
-                return selectedSong;
+                return _selectedSong;
             }
             set
             {
-                selectedSong = value;
+                if (value != _selectedSong)
+                {
+                    _selectedSong = value;
+                    OnPropertyChanged("SelectedSong");
+                }
             }
         }
     }

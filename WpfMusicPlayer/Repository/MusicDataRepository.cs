@@ -13,18 +13,18 @@ namespace WpfMusicPlayer.Repository
 
         public async Task<MusicPlayerData> LoadMusicDataModelAsync()
         {
-            using (StreamReader reader = new StreamReader(@"C:\TestProjects\WpfMusicPlayer\WpfMusicPlayer\Assets\music.json"))
+            using (var reader = new StreamReader(@"C:\TestProjects\WpfMusicPlayer\WpfMusicPlayer\Assets\music.json"))
             {
-                string json = await reader.ReadToEndAsync();
-                return await Task.Factory.StartNew<MusicPlayerData>(() => JsonConvert.DeserializeObject<MusicPlayerData>(json));
+                var json = await reader.ReadToEndAsync();
+                return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<MusicPlayerData>(json));
             }
         }
 
         public MusicPlayerData LoadMusicDataModel()
         {
-            using (StreamReader reader = new StreamReader(@"C:\TestProjects\WpfMusicPlayer\WpfMusicPlayer\Assets\music.json"))
+            using (var reader = new StreamReader(@"C:\TestProjects\WpfMusicPlayer\WpfMusicPlayer\Assets\music.json"))
             {
-                string json = reader.ReadToEnd();
+                var json = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<MusicPlayerData>(json);
             }
         }

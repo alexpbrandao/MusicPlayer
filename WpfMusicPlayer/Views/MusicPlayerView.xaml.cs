@@ -19,6 +19,8 @@ namespace WpfMusicPlayer.Views
             if (artist != null)
             {
                 AlbumListView.ItemsSource = artist.Albums;
+                AlbumsNumber.Text = artist.Albums.Count.ToString();
+                SongsNumber.Text = 0.ToString();
                 SongListView.ItemsSource = null;
             }
         }
@@ -28,7 +30,8 @@ namespace WpfMusicPlayer.Views
             var album = AlbumListView.SelectedItem as Album;
             if (album != null)
             {
-                SongListView.ItemsSource = album.Songs;             
+                SongListView.ItemsSource = album.Songs;
+                SongsNumber.Text = album.Songs.Count.ToString();            
             }
         }
     }

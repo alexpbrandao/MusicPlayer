@@ -4,12 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:prism="clr-namespace:Microsoft.Practices.Prism.Mvvm;assembly=Microsoft.Practices.Prism.Mvvm.Desktop"
-        xmlns:musicPlayer="clr-namespace:WpfMusicPlayer"
-        xmlns:views="clr-namespace:WpfMusicPlayer.Views"
-        xmlns:viewModels="clr-namespace:WpfMusicPlayer.ViewModels"
         xmlns:models="clr-namespace:WpfMusicPlayer.Model"
         mc:Ignorable="d"
-        Title="Music Player" HorizontalAlignment="Center" Height="350" Width="600"        
+        Title="Music Player" HorizontalAlignment="Center" Height="350" Width="650"        
         prism:ViewModelLocator.AutoWireViewModel="True">
 
     <Grid x:Name="LayoutRoot">
@@ -18,43 +15,82 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="100"/>
-            <ColumnDefinition Width="Auto" MinWidth="200" MaxWidth="300"/>
-            <ColumnDefinition Width="*" MinWidth="100"/>
+            <ColumnDefinition Width="Auto" MinWidth="100"/>
+            <ColumnDefinition Width="*" MinWidth="200"/>
+            <ColumnDefinition Width="Auto" MinWidth="100"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Name="ArtistsNumber" Grid.Row="0" Grid.Column="0" Margin="10, 0, 0, 0">
-            <Run Text="{Binding NumberOfArtists, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Run Text=" ARTISTS A-Z"/>
-        </TextBlock>
-        <ListView Name="ArtistListView" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Artists, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="OnArtistSelectionChanged">
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="10, 0, 0, 0" Orientation="Horizontal" 
+                    HorizontalAlignment="Left">
+            <TextBlock Name="ArtistsNumber" Text="{Binding NumberOfArtists, Mode=OneWay, 
+                                                           UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Name="ArtistsSorter" Text=" ARTISTS A-Z"/>
+        </StackPanel>        
+        <ListView Name="ArtistListView" Grid.Row="1" Grid.Column="0" 
+                  ItemsSource="{Binding Artists, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectionChanged="OnArtistSelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Label Content="{Binding Name}"/>
+                    <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>            
         </ListView>
-        <TextBlock Name="AlbumsNumber" Grid.Row="0" Grid.Column="1" Margin="10, 0, 0, 0">
-            <Run Text="{Binding NumberOfAlbums, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Run Text=" ALBUMS A-Z"/>
-        </TextBlock>
-        <ListView Name="AlbumListView" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding AlbumsForArtist, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="OnAlbumSelectionChanged">
+
+        <StackPanel Grid.Row="0" Grid.Column="1" Margin="10, 0, 0, 0" Orientation="Horizontal" 
+                    HorizontalAlignment="Left">
+            <TextBlock Name="AlbumsNumber" Text="{Binding NumberOfAlbums, Mode=OneWay, 
+                                                          UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Name="AlbumsSorter" Text=" ALBUMS A-Z"/>
+        </StackPanel>
+        <ListView Name="AlbumListView" Grid.Row="1" Grid.Column="1"
+                  ItemsSource="{Binding AlbumsForArtist, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectionChanged="OnAlbumSelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:Album">
-                    <Label Content="{Binding Title}"/>
+                    <StackPanel Name="AlbumPanel">
+                        <Image Source="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                               Stretch="UniformToFill" Width="64" Height="64" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                   HorizontalAlignment="Left"/>
+                    </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <TextBlock Name="SongsNumber" Grid.Row="0" Grid.Column="2" Margin="10, 0, 0, 0">
-            <Run Text="{Binding NumberOfSongs, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Run Text=" SONGS A-Z"/>
-        </TextBlock>
-        <ListView Name="SongListView" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding SongsForAlbum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-            <ListView.ItemTemplate>
-                <DataTemplate DataType="models:Song">
-                    <Label Content="{Binding Title}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+        
+        <StackPanel Grid.Row="0" Grid.Column="2" Margin="10, 0, 0, 0" Orientation="Horizontal" 
+                    HorizontalAlignment="Left">
+            <TextBlock Name="SongsNumber" Text="{Binding NumberOfSongs, Mode=OneWay, 
+                                                         UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Name="SongsSorter" Text=" SONGS A-Z"/>
+        </StackPanel>
+        <ListView Name="SongListView" Grid.Row="1" Grid.Column="2" 
+                  ItemsSource="{Binding SongsForAlbum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Length" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="models:Song">
+                                <TextBlock Name="SongLength" Text="{Binding Length, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Title" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="models:Song">
+                                <TextBlock Name="Title" Text="{Binding Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Fave" Width ="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="models:Song">
+                                <Image Name="SongFavorite"
+                                   Width="20" Height="20" Source="..\Assets\favorite.png" Visibility="{Binding Favorite}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
         </ListView>
     </Grid>
 </Window>
