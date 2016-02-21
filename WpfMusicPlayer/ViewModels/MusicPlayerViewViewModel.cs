@@ -1,8 +1,10 @@
 ﻿using Prism.Mvvm;
+using Microsoft.Practices.Prism.Commands;
+using System.Linq;
 using WpfMusicPlayer.Model;
 using WpfMusicPlayer.Repository;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Windows;
 
 namespace WpfMusicPlayer.ViewModels
 {
@@ -10,29 +12,25 @@ namespace WpfMusicPlayer.ViewModels
     {
         public MusicPlayerViewViewModel()
         {
-            LoadMusicPlayerDataAsync();         
+            LoadMusicPlayerDataAsync();
+
+            SortArtistsCommand = new DelegateCommand(SortArtists);
+            SortAlbumsCommand = new DelegateCommand(SortAlbums);
+            SortSongsCommand = new DelegateCommand(SortSongs);         
         }
 
         private async void LoadMusicPlayerDataAsync()
         {
             var repository = new MusicDataRepository();
             var musicPlayerData = await repository.LoadMusicDataModelAsync();
-            if (musicPlayerData != null)
-            {
-                Artists = musicPlayerData.Artists;
-                NumberOfArtists = Artists.Count;
-            }
+            Artists = (musicPlayerData != null) ? musicPlayerData.Artists : null;
         }
 
         private void LoadMusicPlayerData()
         {
             var repository = new MusicDataRepository();
             var musicPlayerData = repository.LoadMusicDataModel();
-            if (musicPlayerData != null)
-            {
-                Artists = musicPlayerData.Artists;
-                NumberOfArtists = Artists.Count;
-            }
+            Artists = (musicPlayerData != null) ? musicPlayerData.Artists : null;
         }
 
         private ObservableCollection<Artist> _artists = new ObservableCollection<Artist>();        
@@ -48,8 +46,16 @@ namespace WpfMusicPlayer.ViewModels
                 {
                     _artists = value;
                     OnPropertyChanged("Artists");
+
+                    NumberOfArtists = _artists.Count;
                 }
             }         
+        }
+
+        public DelegateCommand SortArtistsCommand { get; private set; }
+        private void SortArtists()
+        {
+            Artists = new ObservableCollection<Artist>(from artist in _artists orderby artist.Name select artist);
         }
 
         private int _numberOfArtists = 0;
@@ -82,6 +88,8 @@ namespace WpfMusicPlayer.ViewModels
                 {
                     _selectedArtist = value;
                     OnPropertyChanged("SelectedArtist");
+
+                   AlbumsForArtist = _selectedArtist.Albums;                  
                 }
             }
         }
@@ -94,10 +102,6 @@ namespace WpfMusicPlayer.ViewModels
                 if (SelectedArtist != null)
                 {
                     _albumsForArtist = SelectedArtist.Albums;
-                    if (_albumsForArtist.Count > 0)
-                    {
-                        SelectedAlbum = _albumsForArtist[0];
-                    }
                 }
 
                 return _albumsForArtist;
@@ -108,8 +112,17 @@ namespace WpfMusicPlayer.ViewModels
                 {
                     _albumsForArtist = value;
                     OnPropertyChanged("AlbumsForArtist");
+
+                    NumberOfAlbums = _albumsForArtist.Count;
+                    SelectedAlbum = null;
                 }
             }
+        }
+
+        public DelegateCommand SortAlbumsCommand { get; private set; }
+        private void SortAlbums()
+        {
+            AlbumsForArtist = new ObservableCollection<Album>(from album in _albumsForArtist orderby album.Date select album);
         }
 
         private int _numberOfAlbums = 0;
@@ -142,6 +155,9 @@ namespace WpfMusicPlayer.ViewModels
                 {
                     _selectedAlbum = value;
                     OnPropertyChanged("SelectedAlbum");
+
+                    SongsForAlbum = (null != _selectedAlbum) ? _selectedAlbum.Songs : 
+                                    new ObservableCollection<Song>();                 
                 }
             }
         }
@@ -154,10 +170,6 @@ namespace WpfMusicPlayer.ViewModels
                 if (SelectedAlbum != null)
                 {
                     _songsForAlbum = SelectedAlbum.Songs;
-                    if (_songsForAlbum.Count > 0)
-                    {
-                        SelectedSong = _songsForAlbum[0];
-                    }
                 }
 
                 return _songsForAlbum;
@@ -168,8 +180,16 @@ namespace WpfMusicPlayer.ViewModels
                 {
                     _songsForAlbum = value;
                     OnPropertyChanged("SongsForAlbum");
+
+                    NumberOfSongs = _songsForAlbum.Count;
                 }
             }
+        }
+
+        public DelegateCommand SortSongsCommand { get; private set; }
+        private void SortSongs()
+        {
+            SongsForAlbum = new ObservableCollection<Song>(from song in _songsForAlbum orderby song.Title select song);
         }
 
         private int _numberOfSongs = 0;

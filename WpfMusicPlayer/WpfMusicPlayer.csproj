@@ -85,6 +85,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Repository\MusicDataRepository.cs" />
+    <Compile Include="ViewModels\FavoriteToVisibilityConverter.cs" />
     <Compile Include="ViewModels\MusicPlayerViewViewModel.cs" />
     <Compile Include="Views\SongUserControl.xaml.cs">
       <DependentUpon>SongUserControl.xaml</DependentUpon>
