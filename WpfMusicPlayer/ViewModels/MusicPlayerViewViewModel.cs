@@ -99,11 +99,6 @@ namespace WpfMusicPlayer.ViewModels
         {
             get
             {
-                if (SelectedArtist != null)
-                {
-                    _albumsForArtist = SelectedArtist.Albums;
-                }
-
                 return _albumsForArtist;
             }
             set
@@ -167,11 +162,6 @@ namespace WpfMusicPlayer.ViewModels
         {
             get
             {
-                if (SelectedAlbum != null)
-                {
-                    _songsForAlbum = SelectedAlbum.Songs;
-                }
-
                 return _songsForAlbum;
             }
             set
